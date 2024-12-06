@@ -4,7 +4,7 @@ import plotly.express as px
 
 st.title("Kelompok Bunga Abadi")
 
-st.write("# Tugas Kelompok PasmingBased")
+st.write("# Tugas Kelompok Bunga Abadi")
 
 st.write("## Pendahuluan")
 st.write("Tuliskan di bagian ini latar belakang data apa yang dipilih, mengapa kelompok memilih data ini, dsb.")
