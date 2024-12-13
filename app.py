@@ -2,14 +2,13 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
-st.title("Kelompok Bunga Abadi")
+st.title("Analisis Saham Perusahaan di Indonesia")
 
 st.write("# Tugas Kelompok PasmingBased")
 
 st.write("## Pendahuluan")
-st.write('''Indonesia sebagai negara berkembang memiliki tujuan untuk meningkatkan kesejahteraan rakyatnya melalui pertumbuhan ekonomi yang stabil dan berkelanjutan. Namun, kemiskinan masih menjadi salah satu masalah utama yang dihadapi oleh Indonesia. Menurut data dari Badan Pusat Statistik (BPS), pada tahun 2022, tingkat kemiskinan di Indonesia masih sebesar 9,22%. Kemiskinan ini dapat mempengaruhi pertumbuhan ekonomi Indonesia karena orang miskin tidak memiliki kemampuan untuk berinvestasi dan meningkatkan produksi.
-
-Pertumbuhan ekonomi Indonesia telah mengalami peningkatan yang signifikan dalam beberapa tahun terakhir. Namun, pertumbuhan ekonomi yang tidak merata dan tidak adil masih menjadi salah satu masalah utama yang dihadapi oleh Indonesia. Menurut data dari Bank Indonesia, pada tahun 2022, pertumbuhan ekonomi Indonesia sebesar 5,17%. Pertumbuhan ekonomi ini dapat dipengaruhi oleh beberapa faktor, termasuk investasi dan tingkat kemiskinan. ''')
+st.write('''Kami memilih menganalisis dataset saham Indonesia karena pasar modal di Indonesia menunjukkan potensi yang besar untuk pertumbuhan dan perkembangan ekonomi. Dalam beberapa tahun terakhir, minat masyarakat terhadap investasi saham semakin meningkat, seiring dengan kemudahan akses informasi dan teknologi yang memfasilitasi transaksi di pasar modal. Dengan lebih dari 700 perusahaan terdaftar di Bursa Efek Indonesia, terdapat beragam pilihan investasi yang dapat dieksplorasi. Melalui analisis dataset saham ini dapat memahami dinamika pergerakan harga, volume perdagangan, serta faktor-faktor yang mempengaruhi kinerja saham, seperti kondisi ekonomi makro, kebijakan pemerintah, dan sentimen pasar.
+Selain itu, analisis dataset saham Indonesia juga penting untuk mengidentifikasi tren dan pola yang dapat membantu dalam pengembangan strategi investasi yang efektif. Dengan memanfaatkan data historis, maka dapat melakukan analisis teknikal dan fundamental yang mendalam, yang memungkinkan untuk meramalkan pergerakan harga saham di masa depan. ''')
 
 st.write("## Deskripsi Data")
 st.write('''Pertumbuhan ekonomi adalah sebuah proses dari perubahan kondisi perekonomian yang terjadi di suatu negara secara berkesinambungan untuk menuju keadaan yang dinilai lebih baik selama jangka waktu tertentu. ''')
