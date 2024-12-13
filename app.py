@@ -9,6 +9,12 @@ st.write("# Tugas Kelompok Bunga Abadi")
 st.write("## Pendahuluan")
 st.write("Tuliskan di bagian ini latar belakang data apa yang dipilih, mengapa kelompok memilih data ini, dsb.")
 
+
+st.write('Ini sebuah string.')
+st.write("Ini sebuah string juga.")
+st.write('''Ini sebuah contoh paragraf yang panjang. Tugas kelompok
+         kami menggunakan data dari Kaggle.''')
+
 st.write("## Deskripsi Data")
 st.write("Tuliskan di bagian ini deskripsi tentang data yang digunakan.")
 
