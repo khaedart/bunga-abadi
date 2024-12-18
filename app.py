@@ -12,7 +12,7 @@ Selain itu, analisis dataset saham Indonesia juga penting untuk mengidentifikasi
 
 
 st.write("## Deskripsi Data")
-st.write('''Pertumbuhan ekonomi adalah sebuah proses dari perubahan kondisi perekonomian yang terjadi di suatu negara secara berkesinambungan untuk menuju keadaan yang dinilai lebih baik selama jangka waktu tertentu. ''')
+st.write('''Dataset IHSG (Indeks Harga Saham Gabungan) yang tersedia mencakup informasi historis mengenai pergerakan harga saham di Bursa Efek Indonesia. Data ini mencakup berbagai variabel penting, seperti tanggal, harga pembukaan, harga penutupan, harga tertinggi, harga terendah, dan volume perdagangan untuk setiap saham yang terdaftar. Dengan rentang waktu yang luas, dataset ini memungkinkan analisis tren jangka panjang dan fluktuasi harga yang dapat dipengaruhi oleh berbagai faktor ekonomi, politik, dan sosial. Selain itu, data ini juga mencakup informasi tentang sektor-sektor industri yang berbeda, memberikan konteks tambahan untuk analisis kinerja saham. Dengan demikian, dataset IHSG ini menjadi sumber yang berharga bagi investor, analis, dan peneliti yang ingin memahami dinamika pasar saham Indonesia dan membuat keputusan investasi yang lebih terinformasi. ''')
 
 st.write("## Visualisasi")
 
@@ -98,12 +98,11 @@ if flag_grafik:
 
 
 st.write("## Analisis")
-st.write('Dataset ini berisi data historis saham yang tercatat di IHSG dengan rentang waktu per menit, per jam, dan per hari. Sumber dataset diambil dari data publik Yahoo Finance dan situs web IDX yang tercantum di tab metadata.
-Dalam analisis ini, berbagai teknik visualisasi digunakan untuk menggambarkan tren harga saham dari waktu ke waktu, yang memungkinkan kita untuk mengidentifikasi pola dan pelacakan yang signifikan. Misalnya, grafik garis yang menunjukkan pergerakan harga saham dapat menunjukkan periode volatilitas tinggi, di mana harga mengalami penurunan atau penurunan tajam, serta periode stabilitas di mana harga cenderung bergerak dalam rentang yang lebih sempit.')
+st.write('''Dataset ini berisi data historis saham yang tercatat di IHSG dengan rentang waktu per menit, per jam, dan per hari. Sumber dataset diambil dari data publik Yahoo Finance dan situs web IDX yang tercantum di tab metadata.
+Dalam analisis ini, berbagai teknik visualisasi digunakan untuk menggambarkan tren harga saham dari waktu ke waktu, yang memungkinkan kita untuk mengidentifikasi pola dan pelacakan yang signifikan. Misalnya, grafik garis yang menunjukkan pergerakan harga saham dapat menunjukkan periode volatilitas tinggi, di mana harga mengalami penurunan atau penurunan tajam, serta periode stabilitas di mana harga cenderung bergerak dalam rentang yang lebih sempit.''')
 
 st.write("## Kesimpulan")
-st.write("Tuliskan butir-butir kesimpulan dari analisis.")
+st.write('''analisis IHSG (Indeks Harga Saham Gabungan) yang dilakukan menggunakan data dari Kaggle dan diolah melalui aplikasi Streamlit menunjukkan bahwa visualisasi interaktif dapat memberikan wawasan yang lebih mendalam tentang pergerakan pasar saham di Indonesia. Dengan memanfaatkan fitur-fitur Streamlit, pengguna dapat dengan mudah menjelajahi data historis IHSG, termasuk harga pembukaan, penutupan, tertinggi, terendah, dan volume perdagangan. Analisis ini mengungkapkan pola-pola signifikan, seperti volatilitas periode tinggi dan tren jangka panjang yang dapat mempengaruhi keputusan investasi. Selain itu, kemampuan untuk memfilter dan membandingkan data antar saham atau sektor industri memungkinkan pengguna untuk melakukan analisis yang lebih fokus dan informatif.''')
 
 st.write("## Referensi / Daftar Pustaka")
-st.write("Tuliskan di bagian ini referensi yang digunakan dalam proyek kelompok ini, misalnya sumber data, makalah ilmiah, dsb.")
-
+st.write("https://www.kaggle.com/datasets/muamkh/ihsgstockdata")
