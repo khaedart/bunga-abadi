@@ -98,7 +98,8 @@ if flag_grafik:
 
 
 st.write("## Analisis")
-st.write("Buat analisis sederhana dari visualisasi data yang muncul di bagian sebelumnya.")
+st.write('Dataset ini berisi data historis saham yang tercatat di IHSG dengan rentang waktu per menit, per jam, dan per hari. Sumber dataset diambil dari data publik Yahoo Finance dan situs web IDX yang tercantum di tab metadata.
+Dalam analisis ini, berbagai teknik visualisasi digunakan untuk menggambarkan tren harga saham dari waktu ke waktu, yang memungkinkan kita untuk mengidentifikasi pola dan pelacakan yang signifikan. Misalnya, grafik garis yang menunjukkan pergerakan harga saham dapat menunjukkan periode volatilitas tinggi, di mana harga mengalami penurunan atau penurunan tajam, serta periode stabilitas di mana harga cenderung bergerak dalam rentang yang lebih sempit.')
 
 st.write("## Kesimpulan")
 st.write("Tuliskan butir-butir kesimpulan dari analisis.")
