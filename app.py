@@ -4,7 +4,7 @@ import plotly.express as px
 
 st.title("Analisis Saham Perusahaan di Indonesia")
 
-st.write("# Tugas Kelompok bunga-abadi")
+st.write("# Tugas Kelompok Bunga Abadi")
 
 st.write("## Pendahuluan")
 st.write('''Kami memilih menganalisis dataset saham Indonesia karena pasar modal di Indonesia menunjukkan potensi yang besar untuk pertumbuhan dan perkembangan ekonomi. Dalam beberapa tahun terakhir, minat masyarakat terhadap investasi saham semakin meningkat, seiring dengan kemudahan akses informasi dan teknologi yang memfasilitasi transaksi di pasar modal. Dengan lebih dari 700 perusahaan terdaftar di Bursa Efek Indonesia, terdapat beragam pilihan investasi yang dapat dieksplorasi. Melalui analisis dataset saham ini dapat memahami dinamika pergerakan harga, volume perdagangan, serta faktor-faktor yang mempengaruhi kinerja saham, seperti kondisi ekonomi makro, kebijakan pemerintah, dan sentimen pasar.
@@ -12,7 +12,7 @@ Selain itu, analisis dataset saham Indonesia juga penting untuk mengidentifikasi
 
 
 st.write("## Deskripsi Data")
-st.write('''Dataset IHSG (Indeks Harga Saham Gabungan) yang tersedia mencakup informasi historis mengenai pergerakan harga saham di Bursa Efek Indonesia. Data ini mencakup berbagai variabel penting, seperti tanggal, harga pembukaan, harga penutupan, harga tertinggi, harga terendah, dan volume perdagangan untuk setiap saham yang terdaftar. Dengan rentang waktu yang luas, dataset ini memungkinkan analisis tren jangka panjang dan fluktuasi harga yang dapat dipengaruhi oleh berbagai faktor ekonomi, politik, dan sosial. Selain itu, data ini juga mencakup informasi tentang sektor-sektor industri yang berbeda, memberikan konteks tambahan untuk analisis kinerja saham. Dengan demikian, dataset IHSG ini menjadi sumber yang berharga bagi investor, analis, dan peneliti yang ingin memahami dinamika pasar saham Indonesia dan membuat keputusan investasi yang lebih terinformasi. ''')
+st.write(''' Dataset ini berisi data historis saham yang tercatat di IHSG dengan retan waktu per menit, per jam, dan per hari. sumber dataset diambil dari data publik Yahoo Finance dan situs web IDX. ''')
 
 st.write("## Visualisasi")
 
@@ -35,8 +35,14 @@ kamus_ticker = {
     'ACES': 'Ace Hardware Indonesia Tbk'
 }
 
-import numpy as np
+import numpy as np 
 
+import os
+for dirname, _, filenames in os.walk('/kaggle/input'):
+    for filename in filenames:
+        print(os.path.join(dirname, filename))
+        
+import pandas as pd
 import warnings
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
@@ -44,65 +50,101 @@ import plotly.subplots as ms
 from plotly.offline import iplot
 warnings.filterwarnings("ignore")
 
-df=pd.read_csv('DaftarSaham.csv')
+df=pd.read_csv('path/to/extract/minute/AALI.csv')
+df = df.loc[df['timestamp']>='2018-04-16'].reset_index(drop=True)
 
-# Select box for ticker symbol with a unique key
-tickerSymbol = st.selectbox(
-    'Silahkan pilih kode perusahaan',
-    kamus_ticker.keys(),
-    key='ticker_selectbox'  # Unique key for the ticker selectbox
-)
+st.write(df)
+st.dataframe(df)
+st.table(df)
 
-# Display the full name of the selected company
-st.write(f'Harga saham {kamus_ticker[tickerSymbol]}.')
+#Window 1 bulan
+WINDOW = 20
+df['sma'] = df['close'].rolling(WINDOW).mean()
+df['std'] = df['close'].rolling(WINDOW).std(ddof = 0)
+display(df)
 
+fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-tickerData = yf.Ticker(tickerSymbol)
-pilihan_periode = st.selectbox(
-    'Pilih periode:',
-    ['1h', '2w', '1mo', '3mo', '6mo', '1y' ]
-)
-tickerDF = tickerData.history(
-    period=pilihan_periode,
-    start='2024-10-01',
-    end='2024-11-06'
-)
+# include candlestick with rangeselector
+fig.add_trace(go.Candlestick(x=df['timestamp'],
+                open=df['open'], high=df['high'],
+                low=df['low'], close=df['close'], name='AALI'),
+               secondary_y=False)
+# Moving Average
+fig.add_trace(go.Scatter(x = df['timestamp'],
+                         y = df['sma'],
+                         line_color = 'black',
+                         name = 'Simple Moving Average'))
 
+# Upper Bound
+fig.add_trace(go.Scatter(x = df['timestamp'],
+                         y = df['sma'] + (df['std'] * 2),
+                         line_color = 'gray',
+                         line = {'dash': 'dash'},
+                         name = 'Bollinger Band',
+                         opacity = 0.5))
 
+# Lower Bound
+fig.add_trace(go.Scatter(x = df['timestamp'],
+                         y = df['sma'] - (df['std'] * 2),
+                         line_color = 'gray',
+                         line = {'dash': 'dash'},
+                         showlegend=False,
+                         opacity = 0.5))
 
-# Checkbox to display the table
-flag_tampil = st.checkbox('Tampilkan table', key ='show_table_checkbox')
-if flag_tampil:
-    st.write(tickerDF.head(10))
-
-# Checkbox to display the graph
-flag_grafik = st.checkbox('Tampilkan graph', key ='show_graph_checkbox')
-if flag_grafik:
-    pilihan_atribut = st.multiselect(
-        'Silahkan pilih atribut yang akan ditampilkan:',
-        ['Low', 'High', 'Open', 'Close', 'Volume'],
-        key='attributes_multiselect'  # Unique key for the multiselect
-    )
-    
-    # Check if any attributes are selected
-    if pilihan_atribut:
-        # Create a line plot for the selected attributes
-        grafik = px.line(
-            tickerDF,
-            title=f'Harga Saham {kamus_ticker[tickerSymbol]}',
-            y=pilihan_atribut
+# include a go.Bar trace for volumes
+fig.add_trace(go.Bar(x=df['timestamp'], y=df['volume'], name='Volume'),
+               secondary_y=True)
+fig.update_xaxes(
+    rangeslider_visible=True,
+    rangebreaks=[
+            dict(bounds=["sat", "mon"])  
+#             dict(bounds=[16, 9], pattern="hour")
+            ],
+    rangeselector=dict(
+            buttons=list([
+                dict(count=1,
+                     label="1mo",
+                     step="month",
+                     stepmode="backward"),
+                 dict(count=6,
+                     label="6mo",
+                     step="month",
+                     stepmode="backward"),
+                dict(count=1,
+                     label="YTD",
+                     step="year",
+                     stepmode="todate"),
+                dict(count=1,
+                     label="1y",
+                     step="year",
+                     stepmode="backward"),
+                dict(step="all")
+            ])
         )
-        st.plotly_chart(grafik)
-    else:
-        st.warning("Silakan pilih setidaknya satu atribut untuk ditampilkan.")
+)
+fig.layout.yaxis2.showgrid=False
+# Add figure title
+fig.update_layout(
+    title_text="Data Saham AALI"
+)
+# Set x-axis title
+fig.update_xaxes(title_text="Date")
+# Set y-axes titles
+fig.update_yaxes(title_text="<b>Price</b>", secondary_y=False)
+fig.update_yaxes(title_text="<b>Volume</b>", secondary_y=True)
+fig.show()
+
+
+
 
 
 st.write("## Analisis")
-st.write('''Dataset ini berisi data historis saham yang tercatat di IHSG dengan rentang waktu per menit, per jam, dan per hari. Sumber dataset diambil dari data publik Yahoo Finance dan situs web IDX yang tercantum di tab metadata.
-Dalam analisis ini, berbagai teknik visualisasi digunakan untuk menggambarkan tren harga saham dari waktu ke waktu, yang memungkinkan kita untuk mengidentifikasi pola dan pelacakan yang signifikan. Misalnya, grafik garis yang menunjukkan pergerakan harga saham dapat menunjukkan periode volatilitas tinggi, di mana harga mengalami penurunan atau penurunan tajam, serta periode stabilitas di mana harga cenderung bergerak dalam rentang yang lebih sempit.''')
+st.write(''' Dalam analisis ini, visualisasi untuk menggambarkan tren harga saham dari waktu ke waktu yang memungkinkan untuk mengidentifikasi pola yang signifikan. Misalnya, grafik garis yang menunjukkan pergerakan harga saham dapat menunjukkan periode volatilitas yang tinggi, dimana harga mengalami penurunan atau penurunan tajam, serta periode stabilitas dimana harga cenderung bergerak dalam rentang yang lebih sempit.''')
 
 st.write("## Kesimpulan")
-st.write('''analisis IHSG (Indeks Harga Saham Gabungan) yang dilakukan menggunakan data dari Kaggle dan diolah melalui aplikasi Streamlit menunjukkan bahwa visualisasi interaktif dapat memberikan wawasan yang lebih mendalam tentang pergerakan pasar saham di Indonesia. Dengan memanfaatkan fitur-fitur Streamlit, pengguna dapat dengan mudah menjelajahi data historis IHSG, termasuk harga pembukaan, penutupan, tertinggi, terendah, dan volume perdagangan. Analisis ini mengungkapkan pola-pola signifikan, seperti volatilitas periode tinggi dan tren jangka panjang yang dapat mempengaruhi keputusan investasi. Selain itu, kemampuan untuk memfilter dan membandingkan data antar saham atau sektor industri memungkinkan pengguna untuk melakukan analisis yang lebih fokus dan informatif.''')
+st.write("Data IHSG ini mencakup data historis yang mencakup harga pembukaan, penutupan, tertinggi, terendah, dan volume perdagangan ini memungkinkan untuk mengidentifikasi pola dan tren yang dapat mempengaruhi keputusan investasi. Melalui analisis dari visualisasi data tabel dan grafik ini dapat mengeksplorasi akumumulasi harga saham dari waktu ke waktu.")
 
 st.write("## Referensi / Daftar Pustaka")
 st.write("https://www.kaggle.com/datasets/muamkh/ihsgstockdata")
+
