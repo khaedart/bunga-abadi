@@ -42,98 +42,55 @@ for dirname, _, filenames in os.walk('/kaggle/input'):
     for filename in filenames:
         print(os.path.join(dirname, filename))
         
-import pandas as pd
-import warnings
-import plotly.graph_objects as go
-from plotly.subplots import make_subplots
-import plotly.subplots as ms
-from plotly.offline import iplot
-warnings.filterwarnings("ignore")
+# Select box for ticker symbol with a unique key
+tickerSymbol = st.selectbox(
+    'Silahkan pilih kode perusahaan',
+    kamus_ticker.keys(),
+    key='ticker_selectbox'  # Unique key for the ticker selectbox
+)
 
-df=pd.read_csv('path/to/extract/minute/AALI.csv')
-df = df.loc[df['timestamp']>='2018-04-16'].reset_index(drop=True)
+# Display the full name of the selected company
+st.write(f'Harga saham {kamus_ticker[tickerSymbol]}.')
 
-st.write(df)
-st.dataframe(df)
-st.table(df)
 
-#Window 1 bulan
-WINDOW = 20
-df['sma'] = df['close'].rolling(WINDOW).mean()
-df['std'] = df['close'].rolling(WINDOW).std(ddof = 0)
-display(df)
+tickerData = yf.Ticker(tickerSymbol)
+pilihan_periode = st.selectbox(
+    'Pilih periode:',
+    ['1h', '2w', '1mo', '3mo', '6mo', '1y' ]
+)
+tickerDF = tickerData.history(
+    period=pilihan_periode,
+    start='2024-10-01',
+    end='2024-11-06'
+)
 
-fig = make_subplots(specs=[[{"secondary_y": True}]])
 
-# include candlestick with rangeselector
-fig.add_trace(go.Candlestick(x=df['timestamp'],
-                open=df['open'], high=df['high'],
-                low=df['low'], close=df['close'], name='AALI'),
-               secondary_y=False)
-# Moving Average
-fig.add_trace(go.Scatter(x = df['timestamp'],
-                         y = df['sma'],
-                         line_color = 'black',
-                         name = 'Simple Moving Average'))
 
-# Upper Bound
-fig.add_trace(go.Scatter(x = df['timestamp'],
-                         y = df['sma'] + (df['std'] * 2),
-                         line_color = 'gray',
-                         line = {'dash': 'dash'},
-                         name = 'Bollinger Band',
-                         opacity = 0.5))
+# Checkbox to display the table
+flag_tampil = st.checkbox('Tampilkan tabel', key='show_table_checkbox')
+if flag_tampil:
+    st.write(tickerDF.head(10))
 
-# Lower Bound
-fig.add_trace(go.Scatter(x = df['timestamp'],
-                         y = df['sma'] - (df['std'] * 2),
-                         line_color = 'gray',
-                         line = {'dash': 'dash'},
-                         showlegend=False,
-                         opacity = 0.5))
-
-# include a go.Bar trace for volumes
-fig.add_trace(go.Bar(x=df['timestamp'], y=df['volume'], name='Volume'),
-               secondary_y=True)
-fig.update_xaxes(
-    rangeslider_visible=True,
-    rangebreaks=[
-            dict(bounds=["sat", "mon"])  
-#             dict(bounds=[16, 9], pattern="hour")
-            ],
-    rangeselector=dict(
-            buttons=list([
-                dict(count=1,
-                     label="1mo",
-                     step="month",
-                     stepmode="backward"),
-                 dict(count=6,
-                     label="6mo",
-                     step="month",
-                     stepmode="backward"),
-                dict(count=1,
-                     label="YTD",
-                     step="year",
-                     stepmode="todate"),
-                dict(count=1,
-                     label="1y",
-                     step="year",
-                     stepmode="backward"),
-                dict(step="all")
-            ])
+# Checkbox to display the graph
+flag_grafik = st.checkbox('Tampilkan grafik', key='show_graph_checkbox')
+if flag_grafik:
+    pilihan_atribut = st.multiselect(
+        'Silahkan pilih atribut yang akan ditampilkan:',
+        ['Low', 'High', 'Open', 'Close', 'Volume'],
+        key='attributes_multiselect'  # Unique key for the multiselect
+    )
+    
+    # Check if any attributes are selected
+    if pilihan_atribut:
+        # Create a line plot for the selected attributes
+        grafik = px.line(
+            tickerDF,
+            title=f'Harga Saham {kamus_ticker[tickerSymbol]}',
+            y=pilihan_atribut
         )
-)
-fig.layout.yaxis2.showgrid=False
-# Add figure title
-fig.update_layout(
-    title_text="Data Saham AALI"
-)
-# Set x-axis title
-fig.update_xaxes(title_text="Date")
-# Set y-axes titles
-fig.update_yaxes(title_text="<b>Price</b>", secondary_y=False)
-fig.update_yaxes(title_text="<b>Volume</b>", secondary_y=True)
-fig.show()
+        st.plotly_chart(grafik)
+    else:
+        st.warning("Silakan pilih setidaknya satu atribut untuk ditampilkan.")
 
 
 
